@@ -615,5 +615,51 @@
     });
   </script>
 
-</body>
+
+
+  <!-- 2026 UPGRADE LAYER -->
+  <style>
+    .status-pill{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border:1px solid rgba(0,255,234,.25);border-radius:999px;background:rgba(0,255,234,.05);font-size:.78rem;letter-spacing:1.5px;color:#b9fff9}
+    .status-dot{width:7px;height:7px;border-radius:50%;background:#00ffea;box-shadow:0 0 14px #00ffea;animation:pulseStatus 1.5s infinite}
+    @keyframes pulseStatus{50%{transform:scale(1.7);opacity:.5}}
+    .upgrade-dock{position:fixed;right:24px;bottom:24px;z-index:200;display:flex;flex-direction:column;gap:10px;align-items:flex-end}
+    .upgrade-btn{border:1px solid rgba(0,255,234,.35);background:rgba(3,6,12,.82);backdrop-filter:blur(18px);color:#fff;padding:12px 16px;border-radius:12px;cursor:pointer;box-shadow:0 10px 35px rgba(0,0,0,.45);transition:.25s}
+    .upgrade-btn:hover{transform:translateY(-3px);border-color:#00ffea;box-shadow:0 0 28px rgba(0,255,234,.2)}
+    .ai-panel{position:fixed;right:24px;bottom:86px;width:min(390px,calc(100vw - 32px));z-index:201;display:none;overflow:hidden;border:1px solid rgba(0,255,234,.2);border-radius:18px;background:rgba(3,6,12,.94);backdrop-filter:blur(22px);box-shadow:0 25px 80px rgba(0,0,0,.65)}
+    .ai-head{padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between;align-items:center}.ai-head b{letter-spacing:1px}
+    .ai-messages{height:270px;overflow:auto;padding:16px}.ai-msg{max-width:85%;padding:10px 12px;border-radius:12px;margin-bottom:10px;font-size:.9rem;line-height:1.45}.ai-bot{background:rgba(0,255,234,.07);border:1px solid rgba(0,255,234,.12)}.ai-user{margin-left:auto;background:rgba(208,0,255,.1);border:1px solid rgba(208,0,255,.15)}
+    .ai-input{display:flex;gap:8px;padding:12px;border-top:1px solid rgba(255,255,255,.08)}.ai-input input{flex:1;background:#080c14;border:1px solid rgba(255,255,255,.1);border-radius:10px;color:#fff;padding:11px;outline:none}.ai-input button{border:0;border-radius:10px;padding:0 14px;background:#00ffea;color:#001414;font-weight:800;cursor:pointer}
+    .login-modal{position:fixed;inset:0;z-index:300;display:none;place-items:center;background:rgba(0,0,0,.72);backdrop-filter:blur(12px)}
+    .login-card{width:min(430px,calc(100vw - 32px));padding:28px;border:1px solid rgba(0,255,234,.25);border-radius:20px;background:linear-gradient(180deg,rgba(10,15,25,.97),rgba(2,5,10,.97));box-shadow:0 30px 100px rgba(0,0,0,.8)}
+    .login-card input{width:100%;margin:8px 0;padding:13px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:#070b12;color:#fff;outline:none}.login-card .login-submit{width:100%;margin-top:10px;padding:13px;border:0;border-radius:10px;background:#00ffea;color:#001414;font-weight:900;cursor:pointer}.modal-close{float:right;background:none;border:0;color:#8a9bb5;font-size:22px;cursor:pointer}
+    .quick-grid{max-width:1200px;margin:30px auto 0;padding:0 5%;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.quick-card{padding:20px;border-radius:16px;border:1px solid rgba(255,255,255,.07);background:rgba(8,12,20,.7);transition:.25s}.quick-card:hover{transform:translateY(-5px);border-color:rgba(0,255,234,.25)}.quick-card strong{display:block;font-size:1.5rem;margin-bottom:5px}.quick-card span{color:#8a9bb5;font-size:.8rem;letter-spacing:1px}
+    @media(max-width:800px){.quick-grid{grid-template-columns:repeat(2,1fr)}header .status-pill{display:none}}
+    @media(max-width:480px){.quick-grid{grid-template-columns:1fr}.upgrade-dock{right:16px;bottom:16px}}
+  </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded',()=>{
+      // Live status + quick metrics
+      const headerRight=document.querySelector('header > div:last-child');
+      if(headerRight){const pill=document.createElement('span');pill.className='status-pill';pill.innerHTML='<i class="status-dot"></i> AI CORE ONLINE';headerRight.insertBefore(pill,headerRight.firstChild)}
+      const hero=document.querySelector('.hero-section');
+      if(hero){const grid=document.createElement('div');grid.className='quick-grid';grid.innerHTML='<div class="quick-card"><strong>08</strong><span>TECH MODULES</span></div><div class="quick-card"><strong>24/7</strong><span>AI ASSISTANCE</span></div><div class="quick-card"><strong>∞</strong><span>LEARNING PATHS</span></div><div class="quick-card"><strong>100%</strong><span>INTERACTIVE UI</span></div>';hero.appendChild(grid)}
+
+      // Login modal — frontend shell only; no real credential storage.
+      const login=document.querySelector('header .btn');
+      const modal=document.createElement('div');modal.className='login-modal';modal.innerHTML='<div class="login-card"><button class="modal-close" aria-label="Close">×</button><div style="color:#00ffea;font-size:.75rem;letter-spacing:2px;margin-bottom:8px">SECURE ACCESS</div><h2 style="margin-bottom:8px">System Login</h2><p style="color:#8a9bb5;font-size:.9rem;margin-bottom:16px">Authentication UI is ready. Connect a backend provider before using real credentials.</p><input id="loginEmail" type="email" placeholder="Email"><input id="loginPassword" type="password" placeholder="Password"><button class="login-submit" id="loginDemo">CONTINUE</button><div id="loginNotice" style="color:#8a9bb5;font-size:.75rem;margin-top:10px"></div></div>';
+      document.body.appendChild(modal); if(login){login.addEventListener('click',e=>{e.preventDefault();modal.style.display='grid'})} modal.querySelector('.modal-close').onclick=()=>modal.style.display='none'; modal.onclick=e=>{if(e.target===modal)modal.style.display='none'};
+      modal.querySelector('#loginDemo').onclick=()=>{modal.querySelector('#loginNotice').textContent='Demo UI only — no password is sent or stored.'};
+
+      // AI assistant with local demo responses.
+      const dock=document.createElement('div');dock.className='upgrade-dock';dock.innerHTML='<button class="upgrade-btn" id="aiOpen">✦ AI TECH ASSISTANT</button>';
+      const panel=document.createElement('div');panel.className='ai-panel';panel.innerHTML='<div class="ai-head"><b>AI TECH ASSISTANT</b><button class="modal-close" id="aiClose">×</button></div><div class="ai-messages" id="aiMessages"><div class="ai-msg ai-bot">Yo 👋 Ask me about Cloud, Cyber Security, AI, CCNA, or any course.</div></div><div class="ai-input"><input id="aiInput" placeholder="Ask something..."><button id="aiSend">Send</button></div>';
+      document.body.append(dock,panel);
+      const messages=panel.querySelector('#aiMessages'),input=panel.querySelector('#aiInput');
+      const answer=q=>{q=q.toLowerCase();if(q.includes('cloud'))return'Cloud path: Networking → Linux → AWS/Azure → Docker → Kubernetes → projects.';if(q.includes('cyber')||q.includes('security'))return'Cyber path: Networking → Linux → Security fundamentals → labs → ethical hacking.';if(q.includes('ccna')||q.includes('network'))return'CCNA path: OSI/TCP-IP → IPv4/IPv6 → switching → routing → VLANs → troubleshooting.';if(q.includes('ai'))return'AI path: Python basics → ML concepts → APIs → prompting → build real projects.';return'Try asking about Cloud, Cyber Security, AI, CCNA, or a course.'};
+      const send=()=>{const q=input.value.trim();if(!q)return;messages.insertAdjacentHTML('beforeend','<div class="ai-msg ai-user"></div>');messages.lastElementChild.textContent=q;messages.insertAdjacentHTML('beforeend','<div class="ai-msg ai-bot"></div>');messages.lastElementChild.textContent=answer(q);input.value='';messages.scrollTop=messages.scrollHeight};
+      dock.querySelector('#aiOpen').onclick=()=>{panel.style.display='block';input.focus()};panel.querySelector('#aiClose').onclick=()=>panel.style.display='none';panel.querySelector('#aiSend').onclick=send;input.addEventListener('keydown',e=>{if(e.key==='Enter')send()});
+    });
+  </script>
+\n</body>
 </html>
